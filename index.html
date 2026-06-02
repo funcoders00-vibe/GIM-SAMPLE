@@ -1,0 +1,2769 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FITMAX ELITE — India's Premium Fitness Experience</title>
+<meta name="description" content="Transform your body and life at FITMAX ELITE — India's most premium fitness studio. Join 2500+ members achieving extraordinary results.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@300;400;500;600;700&family=Exo+2:ital,wght@0,100..900;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<style>
+:root {
+  --black: #050505;
+  --dark: #0a0a0a;
+  --dark2: #111111;
+  --dark3: #1a1a1a;
+  --gray: #2a2a2a;
+  --mid: #444;
+  --light: #888;
+  --white: #f0f0f0;
+  --neon: #b8ff2e;
+  --neon2: #7dff00;
+  --neon-dim: rgba(184,255,46,0.15);
+  --neon-glow: 0 0 20px rgba(184,255,46,0.5), 0 0 60px rgba(184,255,46,0.2);
+  --glass: rgba(255,255,255,0.04);
+  --glass-border: rgba(255,255,255,0.08);
+}
+
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--black);
+  color: var(--white);
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* CUSTOM CURSOR */
+.cursor {
+  width: 10px; height: 10px;
+  background: var(--neon);
+  border-radius: 50%;
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%,-50%);
+  transition: transform 0.1s ease;
+  mix-blend-mode: difference;
+}
+.cursor-follower {
+  width: 40px; height: 40px;
+  border: 1px solid rgba(184,255,46,0.4);
+  border-radius: 50%;
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%,-50%);
+  transition: transform 0.15s ease, width 0.3s, height 0.3s, border-color 0.3s;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--dark); }
+::-webkit-scrollbar-thumb { background: var(--neon); border-radius: 2px; }
+
+/* NAV */
+nav {
+  position: fixed;
+  top: 0; left: 0; right: 0;
+  z-index: 1000;
+  padding: 0 6vw;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: rgba(5,5,5,0.8);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  transition: all 0.3s ease;
+}
+nav.scrolled {
+  height: 64px;
+  background: rgba(5,5,5,0.95);
+}
+.nav-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  letter-spacing: 3px;
+  color: var(--white);
+  text-decoration: none;
+}
+.nav-logo span { color: var(--neon); }
+.nav-links {
+  display: flex;
+  list-style: none;
+  gap: 2.5rem;
+  align-items: center;
+}
+.nav-links a {
+  color: var(--light);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  transition: color 0.3s;
+  position: relative;
+}
+.nav-links a::after {
+  content: '';
+  position: absolute;
+  bottom: -4px; left: 0;
+  width: 0; height: 1px;
+  background: var(--neon);
+  transition: width 0.3s;
+}
+.nav-links a:hover { color: var(--neon); }
+.nav-links a:hover::after { width: 100%; }
+.nav-cta {
+  background: var(--neon);
+  color: var(--black) !important;
+  padding: 10px 24px;
+  border-radius: 2px;
+  font-weight: 700 !important;
+  letter-spacing: 1px !important;
+  transition: box-shadow 0.3s, transform 0.2s !important;
+}
+.nav-cta::after { display: none !important; }
+.nav-cta:hover {
+  box-shadow: var(--neon-glow) !important;
+  transform: translateY(-1px) !important;
+  color: var(--black) !important;
+}
+
+/* HAMBURGER */
+.hamburger {
+  display: none;
+  flex-direction: column;
+  gap: 5px;
+  cursor: pointer;
+  z-index: 1001;
+}
+.hamburger span {
+  width: 28px; height: 2px;
+  background: var(--white);
+  transition: all 0.3s;
+}
+
+/* HERO */
+#hero {
+  position: relative;
+  height: 100vh;
+  min-height: 700px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+}
+#hero-canvas {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.hero-bg-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(5,5,5,0.95) 0%, rgba(5,5,5,0.7) 50%, rgba(5,5,5,0.85) 100%);
+  z-index: 1;
+}
+.hero-content {
+  position: relative;
+  z-index: 2;
+  padding: 0 6vw;
+  max-width: 780px;
+}
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--neon-dim);
+  border: 1px solid rgba(184,255,46,0.3);
+  padding: 6px 16px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--neon);
+  margin-bottom: 2rem;
+}
+.hero-badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--neon);
+  border-radius: 50%;
+  animation: pulse 1.5s infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.5); }
+}
+.hero-headline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(3.5rem, 9vw, 8rem);
+  line-height: 0.92;
+  letter-spacing: 2px;
+  margin-bottom: 1.5rem;
+}
+.hero-headline .line1 { display: block; color: var(--white); }
+.hero-headline .line2 { display: block; color: var(--neon); }
+.hero-headline .line3 { display: block; color: var(--white); }
+.hero-sub {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 300;
+  color: var(--light);
+  margin-bottom: 3rem;
+  letter-spacing: 1px;
+  max-width: 480px;
+}
+.hero-sub span { color: var(--neon); font-weight: 600; }
+.hero-ctas {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--neon);
+  color: var(--black);
+  padding: 16px 36px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.3s, transform 0.2s;
+  clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+}
+.btn-primary:hover {
+  box-shadow: var(--neon-glow);
+  transform: translateY(-2px);
+}
+.btn-primary::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.5s;
+}
+.btn-primary:hover::before { left: 100%; }
+.btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: transparent;
+  color: var(--white);
+  padding: 15px 36px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid rgba(255,255,255,0.2);
+  cursor: pointer;
+  transition: all 0.3s;
+  clip-path: polygon(12px 0, 100% 0, calc(100% - 12px) 100%, 0 100%);
+}
+.btn-secondary:hover {
+  border-color: var(--neon);
+  color: var(--neon);
+  background: var(--neon-dim);
+}
+.hero-scroll-indicator {
+  position: absolute;
+  bottom: 40px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+.scroll-line {
+  width: 1px;
+  height: 60px;
+  background: linear-gradient(to bottom, var(--neon), transparent);
+  animation: scrollDown 2s infinite;
+}
+@keyframes scrollDown {
+  0% { opacity: 1; transform: scaleY(1) translateY(0); }
+  100% { opacity: 0; transform: scaleY(0.5) translateY(20px); }
+}
+.scroll-text {
+  font-size: 0.65rem;
+  letter-spacing: 3px;
+  color: var(--light);
+  text-transform: uppercase;
+}
+
+/* STATS */
+#stats {
+  padding: 80px 6vw;
+  background: var(--dark2);
+  border-top: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--glass-border);
+  position: relative;
+  overflow: hidden;
+}
+#stats::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(90deg, transparent 0, transparent 99px, rgba(255,255,255,0.02) 99px, rgba(255,255,255,0.02) 100px);
+  pointer-events: none;
+}
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.stat-item {
+  text-align: center;
+  padding: 2rem;
+  position: relative;
+}
+.stat-item::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 20%; bottom: 20%;
+  width: 1px;
+  background: var(--glass-border);
+}
+.stat-item:last-child::after { display: none; }
+.stat-number {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.8rem, 5vw, 4.5rem);
+  color: var(--neon);
+  line-height: 1;
+  display: block;
+  text-shadow: var(--neon-glow);
+}
+.stat-label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--light);
+  margin-top: 0.5rem;
+  display: block;
+}
+
+/* SECTIONS COMMON */
+section { position: relative; }
+.section-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--neon);
+  margin-bottom: 1rem;
+}
+.section-tag::before {
+  content: '';
+  width: 30px; height: 1px;
+  background: var(--neon);
+}
+.section-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  line-height: 1;
+  letter-spacing: 2px;
+  margin-bottom: 1.5rem;
+}
+.section-title span { color: var(--neon); }
+.section-sub {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 300;
+  color: var(--light);
+  max-width: 520px;
+  line-height: 1.7;
+}
+
+/* ABOUT */
+#about {
+  padding: 120px 6vw;
+  background: var(--black);
+}
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.about-images {
+  position: relative;
+  height: 560px;
+}
+.about-img-main {
+  position: absolute;
+  top: 0; left: 0;
+  width: 75%;
+  height: 420px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #111 100%);
+  border: 1px solid var(--glass-border);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4rem;
+}
+.about-img-secondary {
+  position: absolute;
+  bottom: 0; right: 0;
+  width: 65%;
+  height: 300px;
+  background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+  border: 1px solid rgba(184,255,46,0.2);
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+}
+.about-img-badge {
+  position: absolute;
+  top: 50%; left: 60%;
+  transform: translate(-50%, -50%);
+  background: var(--neon);
+  color: var(--black);
+  padding: 1.5rem;
+  z-index: 2;
+  text-align: center;
+  min-width: 120px;
+}
+.about-img-badge .num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.5rem;
+  line-height: 1;
+  display: block;
+}
+.about-img-badge .txt {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.about-content { padding-left: 1rem; }
+.about-features {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+.about-feature {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  padding: 1.2rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s;
+}
+.about-feature:hover {
+  border-color: rgba(184,255,46,0.3);
+  background: var(--neon-dim);
+  transform: translateX(4px);
+}
+.about-feature-icon {
+  font-size: 1.5rem;
+  min-width: 32px;
+}
+.about-feature-text {
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+/* MEMBERSHIP */
+#membership {
+  padding: 120px 6vw;
+  background: var(--dark2);
+  overflow: hidden;
+}
+.membership-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+.membership-header .section-tag { justify-content: center; }
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+.pricing-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  padding: 2.5rem 2rem;
+  position: relative;
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
+}
+.pricing-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--gray);
+  transition: background 0.3s;
+}
+.pricing-card:hover {
+  transform: translateY(-8px);
+  border-color: rgba(184,255,46,0.3);
+}
+.pricing-card:hover::before { background: var(--neon); }
+.pricing-card.popular {
+  background: linear-gradient(135deg, rgba(184,255,46,0.08) 0%, rgba(184,255,46,0.02) 100%);
+  border-color: rgba(184,255,46,0.4);
+  transform: translateY(-12px);
+}
+.pricing-card.popular::before { background: var(--neon); }
+.popular-badge {
+  position: absolute;
+  top: 0; right: 0;
+  background: var(--neon);
+  color: var(--black);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 5px 14px;
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 10px 100%);
+}
+.plan-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.8rem;
+  letter-spacing: 3px;
+  margin-bottom: 0.5rem;
+}
+.plan-tag {
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--light);
+  margin-bottom: 1.5rem;
+}
+.plan-price {
+  display: flex;
+  align-items: flex-start;
+  gap: 4px;
+  margin-bottom: 0.5rem;
+}
+.plan-currency {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--neon);
+  margin-top: 8px;
+}
+.plan-amount {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3.5rem;
+  color: var(--white);
+  line-height: 1;
+}
+.popular .plan-amount { color: var(--neon); text-shadow: var(--neon-glow); }
+.plan-period {
+  font-size: 0.8rem;
+  color: var(--light);
+  margin-top: 12px;
+}
+.plan-divider {
+  height: 1px;
+  background: var(--glass-border);
+  margin: 1.5rem 0;
+}
+.plan-features {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 2rem;
+}
+.plan-features li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--light);
+}
+.plan-features li::before {
+  content: '✓';
+  width: 20px; height: 20px;
+  background: var(--neon-dim);
+  border: 1px solid rgba(184,255,46,0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  color: var(--neon);
+  flex-shrink: 0;
+  font-weight: 700;
+}
+.plan-btn {
+  width: 100%;
+  display: block;
+  text-align: center;
+  padding: 14px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid var(--glass-border);
+  color: var(--white);
+  background: transparent;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.plan-btn:hover, .popular .plan-btn {
+  background: var(--neon);
+  color: var(--black);
+  border-color: var(--neon);
+  box-shadow: var(--neon-glow);
+}
+
+/* TRAINERS */
+#trainers {
+  padding: 120px 6vw;
+  background: var(--black);
+}
+.trainers-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+.trainers-header .section-tag { justify-content: center; }
+.trainers-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.trainer-card {
+  background: var(--dark2);
+  border: 1px solid var(--glass-border);
+  overflow: hidden;
+  position: relative;
+  transition: all 0.4s;
+}
+.trainer-card:hover {
+  border-color: rgba(184,255,46,0.3);
+  transform: translateY(-8px);
+}
+.trainer-photo {
+  height: 280px;
+  background: var(--dark3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 5rem;
+  position: relative;
+  overflow: hidden;
+}
+.trainer-photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, var(--dark2), transparent 60%);
+}
+.trainer-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(184,255,46,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s;
+  z-index: 2;
+}
+.trainer-card:hover .trainer-overlay { opacity: 1; }
+.trainer-socials {
+  display: flex;
+  gap: 1rem;
+}
+.trainer-socials a {
+  width: 40px; height: 40px;
+  background: var(--dark);
+  border: 1px solid var(--neon);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--neon);
+  font-size: 1rem;
+  text-decoration: none;
+  transition: all 0.3s;
+}
+.trainer-socials a:hover {
+  background: var(--neon);
+  color: var(--black);
+}
+.trainer-info {
+  padding: 1.5rem;
+}
+.trainer-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: 2px;
+  margin-bottom: 0.25rem;
+}
+.trainer-role {
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  color: var(--neon);
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+}
+.trainer-certs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+.cert-badge {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  color: var(--light);
+}
+.trainer-exp {
+  font-size: 0.8rem;
+  color: var(--light);
+}
+.trainer-exp span {
+  color: var(--neon);
+  font-weight: 700;
+}
+
+/* FACILITIES */
+#facilities {
+  padding: 120px 6vw;
+  background: var(--dark2);
+  overflow: hidden;
+  position: relative;
+}
+#facilities::before {
+  content: '';
+  position: absolute;
+  bottom: -200px; right: -200px;
+  width: 600px; height: 600px;
+  background: radial-gradient(circle, rgba(184,255,46,0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+.facilities-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+.facilities-header .section-tag { justify-content: center; }
+.facilities-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.facility-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  padding: 2.5rem 2rem;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.4s;
+}
+.facility-card::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 0;
+  background: linear-gradient(to top, rgba(184,255,46,0.05), transparent);
+  transition: height 0.4s;
+}
+.facility-card:hover {
+  border-color: rgba(184,255,46,0.3);
+  transform: translateY(-6px);
+}
+.facility-card:hover::after { height: 100%; }
+.facility-icon {
+  font-size: 2.8rem;
+  margin-bottom: 1.5rem;
+  display: block;
+}
+.facility-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: 2px;
+  margin-bottom: 0.75rem;
+}
+.facility-desc {
+  font-size: 0.9rem;
+  color: var(--light);
+  line-height: 1.7;
+}
+.facility-tag {
+  display: inline-block;
+  margin-top: 1.2rem;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--neon);
+}
+
+/* TRANSFORMATIONS */
+#transformations {
+  padding: 120px 6vw;
+  background: var(--black);
+}
+.transformations-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+.transformations-header .section-tag { justify-content: center; }
+.masonry-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  grid-template-rows: auto;
+  gap: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.masonry-item {
+  background: var(--dark2);
+  border: 1px solid var(--glass-border);
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.masonry-item:nth-child(1) { grid-row: span 2; }
+.masonry-item:nth-child(4) { grid-row: span 2; }
+.masonry-item:hover { border-color: var(--neon); transform: scale(1.02); z-index: 2; }
+.masonry-photo {
+  width: 100%;
+  height: 200px;
+  background: var(--dark3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 3rem;
+}
+.masonry-item:nth-child(1) .masonry-photo,
+.masonry-item:nth-child(4) .masonry-photo { height: 100%; min-height: 420px; }
+.masonry-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, transparent 60%);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 1.5rem;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.masonry-item:hover .masonry-overlay { opacity: 1; }
+.masonry-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.3rem;
+  letter-spacing: 2px;
+}
+.masonry-result {
+  font-size: 0.75rem;
+  color: var(--neon);
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+.before-after-badge {
+  position: absolute;
+  top: 12px; left: 12px;
+  background: var(--neon);
+  color: var(--black);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+}
+
+/* TESTIMONIALS */
+#testimonials {
+  padding: 120px 6vw;
+  background: var(--dark2);
+  overflow: hidden;
+}
+.testimonials-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+.testimonials-header .section-tag { justify-content: center; }
+.testimonials-slider {
+  position: relative;
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow: hidden;
+}
+.testimonials-track {
+  display: flex;
+  gap: 1.5rem;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.testimonial-card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  padding: 2.5rem;
+  min-width: calc(33.333% - 1rem);
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+  transition: border-color 0.3s;
+}
+.testimonial-card:hover { border-color: rgba(184,255,46,0.3); }
+.testimonial-quote {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 5rem;
+  line-height: 0.8;
+  color: var(--neon);
+  opacity: 0.3;
+  position: absolute;
+  top: 1.5rem; right: 2rem;
+}
+.testimonial-stars {
+  display: flex;
+  gap: 4px;
+  margin-bottom: 1.2rem;
+}
+.star { color: var(--neon); font-size: 0.9rem; }
+.testimonial-text {
+  font-family: 'Exo 2', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 300;
+  color: rgba(240,240,240,0.8);
+  line-height: 1.8;
+  margin-bottom: 2rem;
+  font-style: italic;
+}
+.testimonial-client {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.client-avatar {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  background: var(--dark3);
+  border: 2px solid var(--neon);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  flex-shrink: 0;
+}
+.client-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+}
+.client-info {
+  font-size: 0.75rem;
+  color: var(--neon);
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+.slider-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  margin-top: 2.5rem;
+}
+.slider-btn {
+  width: 48px; height: 48px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: var(--white);
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.slider-btn:hover {
+  background: var(--neon);
+  color: var(--black);
+  border-color: var(--neon);
+}
+.slider-dots {
+  display: flex;
+  gap: 8px;
+}
+.dot {
+  width: 6px; height: 6px;
+  background: var(--gray);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.dot.active {
+  background: var(--neon);
+  width: 24px;
+  border-radius: 3px;
+}
+
+/* SCHEDULE */
+#schedule {
+  padding: 120px 6vw;
+  background: var(--black);
+}
+.schedule-header {
+  text-align: center;
+  margin-bottom: 4rem;
+}
+.schedule-header .section-tag { justify-content: center; }
+.schedule-table-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  overflow-x: auto;
+}
+.schedule-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 700px;
+}
+.schedule-table th {
+  padding: 1rem 1.5rem;
+  text-align: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--light);
+  background: var(--dark2);
+  border: 1px solid var(--glass-border);
+}
+.schedule-table th:first-child {
+  color: var(--neon);
+  text-align: left;
+}
+.schedule-table td {
+  padding: 0.9rem 1.5rem;
+  text-align: center;
+  border: 1px solid var(--glass-border);
+  font-size: 0.8rem;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--light);
+}
+.schedule-table td:first-child {
+  color: var(--white);
+  text-align: left;
+  background: var(--dark2);
+}
+.schedule-table tr:hover td { background: rgba(184,255,46,0.03); }
+.class-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+.badge-yoga { background: rgba(100,200,200,0.15); color: #64c8c8; border: 1px solid rgba(100,200,200,0.3); }
+.badge-cardio { background: rgba(255,100,100,0.15); color: #ff6464; border: 1px solid rgba(255,100,100,0.3); }
+.badge-hiit { background: rgba(255,165,0,0.15); color: #ffa500; border: 1px solid rgba(255,165,0,0.3); }
+.badge-strength { background: rgba(184,255,46,0.15); color: var(--neon); border: 1px solid rgba(184,255,46,0.3); }
+.badge-zumba { background: rgba(200,100,255,0.15); color: #c864ff; border: 1px solid rgba(200,100,255,0.3); }
+
+/* LEAD GEN */
+#contact {
+  padding: 120px 6vw;
+  background: var(--dark2);
+  position: relative;
+  overflow: hidden;
+}
+#contact::before {
+  content: '';
+  position: absolute;
+  top: -300px; left: -300px;
+  width: 800px; height: 800px;
+  background: radial-gradient(circle, rgba(184,255,46,0.04) 0%, transparent 70%);
+  pointer-events: none;
+}
+.contact-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5rem;
+  align-items: center;
+}
+.contact-content {}
+.contact-form {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  padding: 3rem;
+  position: relative;
+}
+.contact-form::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--neon), transparent);
+}
+.form-group {
+  margin-bottom: 1.25rem;
+}
+.form-label {
+  display: block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--light);
+  margin-bottom: 0.6rem;
+}
+.form-input, .form-select {
+  width: 100%;
+  background: rgba(255,255,255,0.04);
+  border: 1px solid var(--glass-border);
+  color: var(--white);
+  padding: 14px 18px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 0.95rem;
+  font-weight: 500;
+  outline: none;
+  transition: border-color 0.3s, background 0.3s;
+}
+.form-input:focus, .form-select:focus {
+  border-color: var(--neon);
+  background: rgba(184,255,46,0.04);
+}
+.form-select option { background: var(--dark2); }
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+.contact-perks {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 2.5rem;
+}
+.perk-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+}
+.perk-icon {
+  width: 44px; height: 44px;
+  background: var(--neon-dim);
+  border: 1px solid rgba(184,255,46,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.2rem;
+  flex-shrink: 0;
+}
+.perk-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 2px;
+  margin-bottom: 0.25rem;
+}
+.perk-desc {
+  font-size: 0.85rem;
+  color: var(--light);
+}
+
+/* MAP */
+#location {
+  height: 400px;
+  position: relative;
+  overflow: hidden;
+}
+#location iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  filter: invert(90%) hue-rotate(180deg) saturate(0.8);
+}
+.map-overlay {
+  position: absolute;
+  top: 40px; left: 6vw;
+  background: rgba(5,5,5,0.9);
+  border: 1px solid var(--glass-border);
+  padding: 1.5rem 2rem;
+  backdrop-filter: blur(20px);
+}
+.map-overlay h3 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.5rem;
+  letter-spacing: 2px;
+  margin-bottom: 0.5rem;
+}
+.map-address {
+  font-size: 0.85rem;
+  color: var(--light);
+  line-height: 1.7;
+}
+.map-address span { color: var(--neon); font-weight: 600; }
+
+/* FOOTER */
+footer {
+  background: var(--dark);
+  border-top: 1px solid var(--glass-border);
+  padding: 80px 6vw 40px;
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 3rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding-bottom: 3rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+.footer-brand .nav-logo {
+  display: block;
+  margin-bottom: 1rem;
+  font-size: 1.8rem;
+}
+.footer-tagline {
+  font-size: 0.85rem;
+  color: var(--light);
+  line-height: 1.7;
+  margin-bottom: 1.5rem;
+  max-width: 280px;
+}
+.footer-socials {
+  display: flex;
+  gap: 0.75rem;
+}
+.social-btn {
+  width: 38px; height: 38px;
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  color: var(--light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 0.9rem;
+  transition: all 0.3s;
+}
+.social-btn:hover {
+  background: var(--neon);
+  color: var(--black);
+  border-color: var(--neon);
+}
+.footer-col h4 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.1rem;
+  letter-spacing: 3px;
+  margin-bottom: 1.5rem;
+  color: var(--neon);
+}
+.footer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.footer-links a {
+  color: var(--light);
+  text-decoration: none;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.footer-links a::before {
+  content: '›';
+  color: var(--neon);
+  font-size: 1rem;
+}
+.footer-links a:hover { color: var(--neon); }
+.footer-contact-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 0.9rem;
+  font-size: 0.85rem;
+  color: var(--light);
+}
+.footer-contact-icon { color: var(--neon); min-width: 16px; }
+.footer-bottom {
+  max-width: 1200px;
+  margin: 2.5rem auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+.footer-copy {
+  font-size: 0.8rem;
+  color: var(--mid);
+}
+.footer-copy span { color: var(--neon); }
+.footer-cta-mini {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* NOISE OVERLAY */
+.noise {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 9990;
+  opacity: 0.015;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-size: 128px;
+}
+
+/* REVEAL ANIMATIONS */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+.reveal-right {
+  opacity: 0;
+  transform: translateX(40px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+.reveal-scale {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+.reveal-scale.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+.delay-1 { transition-delay: 0.1s; }
+.delay-2 { transition-delay: 0.2s; }
+.delay-3 { transition-delay: 0.3s; }
+.delay-4 { transition-delay: 0.4s; }
+.delay-5 { transition-delay: 0.5s; }
+
+/* MOBILE NAV */
+.mobile-menu {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(5,5,5,0.98);
+  backdrop-filter: blur(30px);
+  z-index: 999;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+}
+.mobile-menu.open { display: flex; }
+.mobile-menu a {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2rem;
+  letter-spacing: 4px;
+  color: var(--white);
+  text-decoration: none;
+  transition: color 0.3s;
+}
+.mobile-menu a:hover { color: var(--neon); }
+
+/* RESPONSIVE */
+@media (max-width: 1024px) {
+  .trainers-grid { grid-template-columns: repeat(2, 1fr); }
+  .footer-grid { grid-template-columns: 1fr 1fr; }
+  .masonry-grid { grid-template-columns: repeat(2, 1fr); }
+  .masonry-item:nth-child(1), .masonry-item:nth-child(4) { grid-row: span 1; }
+  .masonry-item:nth-child(1) .masonry-photo,
+  .masonry-item:nth-child(4) .masonry-photo { min-height: 200px; height: 200px; }
+}
+@media (max-width: 768px) {
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .hero-headline { font-size: 3rem; }
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .stat-item:nth-child(2)::after { display: none; }
+  .about-grid { grid-template-columns: 1fr; }
+  .about-images { height: 300px; }
+  .about-img-main { width: 80%; height: 250px; }
+  .about-img-secondary { height: 180px; }
+  .pricing-grid { grid-template-columns: 1fr; max-width: 400px; }
+  .pricing-card.popular { transform: none; }
+  .facilities-grid { grid-template-columns: 1fr; }
+  .testimonial-card { min-width: calc(100% - 0px); }
+  .contact-inner { grid-template-columns: 1fr; gap: 3rem; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+}
+
+/* Real Images Fit & Animations */
+.about-img-main img, .about-img-secondary img, .trainer-photo img, .masonry-photo img, .client-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+  display: block;
+}
+.about-img-main:hover img, .about-img-secondary:hover img, .trainer-card:hover .trainer-photo img, .masonry-item:hover .masonry-photo img {
+  transform: scale(1.08);
+}
+.trainer-photo img {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.trainer-photo::after {
+  z-index: 1;
+}
+.trainer-overlay {
+  z-index: 2;
+}
+
+/* Glare shine for 3D cards */
+.card-glare {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 255, 255, 0.12) 0%, transparent 60%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  border-radius: inherit;
+}
+.pricing-card:hover .card-glare, .trainer-card:hover .card-glare, .facility-card:hover .card-glare {
+  opacity: 1;
+}
+
+/* Floating Badges for 3D Parallax */
+.floating-badge {
+  position: absolute;
+  background: rgba(10, 10, 10, 0.45);
+  backdrop-filter: blur(20px) saturate(140%);
+  -webkit-backdrop-filter: blur(20px) saturate(140%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 14px 22px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  z-index: 5;
+  box-shadow: 0 30px 60px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.15);
+  pointer-events: none;
+  transition: transform 0.1s ease-out;
+}
+.badge-left {
+  top: 25%;
+  left: 5%;
+}
+.badge-right {
+  bottom: 25%;
+  right: 8%;
+}
+.floating-badge-icon {
+  width: 40px; height: 40px;
+  background: var(--neon-dim);
+  border: 1px solid rgba(184,255,46,0.3);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--neon);
+  font-size: 1.1rem;
+}
+.badge-title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1.2rem;
+  letter-spacing: 1px;
+  line-height: 1;
+  color: var(--white);
+}
+.badge-desc {
+  font-size: 0.72rem;
+  color: var(--light);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+@media (max-width: 1024px) {
+  .floating-badge { display: none; }
+}
+
+/* FontAwesome Chevron in Footer links */
+.footer-links a::before {
+  content: '\f105' !important;
+  font-family: 'Font Awesome 6 Free' !important;
+  font-weight: 900 !important;
+  font-size: 0.85rem !important;
+}
+</style>
+</head>
+<body>
+
+<!-- NOISE TEXTURE -->
+<div class="noise"></div>
+
+<!-- CURSOR -->
+<div class="cursor" id="cursor"></div>
+<div class="cursor-follower" id="cursorFollower"></div>
+
+<!-- NAVIGATION -->
+<nav id="navbar">
+  <a href="#" class="nav-logo">FIT<span>MAX</span> ELITE</a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#membership">Plans</a></li>
+    <li><a href="#trainers">Trainers</a></li>
+    <li><a href="#facilities">Facilities</a></li>
+    <li><a href="#schedule">Schedule</a></li>
+    <li><a href="#contact" class="nav-cta">Free Trial</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <a href="#about" onclick="toggleMenu()">About</a>
+  <a href="#membership" onclick="toggleMenu()">Plans</a>
+  <a href="#trainers" onclick="toggleMenu()">Trainers</a>
+  <a href="#facilities" onclick="toggleMenu()">Facilities</a>
+  <a href="#schedule" onclick="toggleMenu()">Schedule</a>
+  <a href="#contact" onclick="toggleMenu()" style="color: var(--neon)">Free Trial →</a>
+</div>
+
+<!-- HERO SECTION -->
+<section id="hero">
+  <canvas id="hero-canvas"></canvas>
+  <div class="hero-bg-overlay"></div>
+
+  <!-- Floating Glass Badges -->
+  <div class="floating-badge badge-left">
+    <div class="floating-badge-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+    <div>
+      <div class="badge-title">Live Tracking</div>
+      <div class="badge-desc">Biometric Coaching</div>
+    </div>
+  </div>
+  <div class="floating-badge badge-right">
+    <div class="floating-badge-icon"><i class="fa-solid fa-users"></i></div>
+    <div>
+      <div class="badge-title">2,500+ Members</div>
+      <div class="badge-desc">Achieving Results</div>
+    </div>
+  </div>
+
+  <div class="hero-content">
+    <div class="hero-badge">India's #1 Premium Fitness Studio</div>
+    <h1 class="hero-headline">
+      <span class="line1">Transform</span>
+      <span class="line2">Your Body.</span>
+      <span class="line3">Transform Your Life.</span>
+    </h1>
+    <p class="hero-sub"><span>India's Premium Fitness Experience</span> — where elite training meets luxury and science-backed results.</p>
+    <div class="hero-ctas">
+      <a href="#contact" class="btn-primary"><i class="fa-solid fa-bolt"></i> Start Your Journey</a>
+      <a href="#contact" class="btn-secondary"><i class="fa-solid fa-bullseye"></i> Book Free Trial</a>
+    </div>
+  </div>
+  <div class="hero-scroll-indicator">
+    <div class="scroll-line"></div>
+    <span class="scroll-text">Scroll</span>
+  </div>
+</section>
+
+<!-- STATS SECTION -->
+<section id="stats">
+  <div class="stats-grid">
+    <div class="stat-item reveal delay-1">
+      <span class="stat-number" data-target="2500">0</span>
+      <span class="stat-label">Elite Members</span>
+    </div>
+    <div class="stat-item reveal delay-2">
+      <span class="stat-number" data-target="50">0</span>
+      <span class="stat-label">Expert Trainers</span>
+    </div>
+    <div class="stat-item reveal delay-3">
+      <span class="stat-number" data-target="12">0</span>
+      <span class="stat-label">Years Excellence</span>
+    </div>
+    <div class="stat-item reveal delay-4">
+      <span class="stat-number" data-target="98">0</span>
+      <span class="stat-label">Success Rate %</span>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT SECTION -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-images reveal-left">
+      <div class="about-img-main"><img src="https://images.unsplash.com/photo-1540497077202-7c8a3999166f?q=80&w=800&auto=format&fit=crop" alt="Premium Fitness Gym"></div>
+      <div class="about-img-secondary"><img src="https://images.unsplash.com/photo-1517838277536-f5f99be501cd?q=80&w=600&auto=format&fit=crop" alt="Strength Training"></div>
+      <div class="about-img-badge">
+        <span class="num">12+</span>
+        <span class="txt">Years<br>Excellence</span>
+      </div>
+    </div>
+    <div class="about-content reveal-right">
+      <div class="section-tag">Our Story</div>
+      <h2 class="section-title">Built For<br><span>Champions</span></h2>
+      <p class="section-sub">FITMAX ELITE was founded with a singular vision — to create India's most premium fitness destination where science, luxury, and relentless passion converge. We don't just build bodies; we sculpt champions.</p>
+      <div class="about-features">
+        <div class="about-feature reveal delay-1">
+          <span class="about-feature-icon"><i class="fa-solid fa-award"></i></span>
+          <span class="about-feature-text">Award Winning Studio</span>
+        </div>
+        <div class="about-feature reveal delay-2">
+          <span class="about-feature-icon"><i class="fa-solid fa-flask"></i></span>
+          <span class="about-feature-text">Science-Backed Methods</span>
+        </div>
+        <div class="about-feature reveal delay-3">
+          <span class="about-feature-icon"><i class="fa-solid fa-crown"></i></span>
+          <span class="about-feature-text">Premium Equipment</span>
+        </div>
+        <div class="about-feature reveal delay-4">
+          <span class="about-feature-icon"><i class="fa-solid fa-leaf"></i></span>
+          <span class="about-feature-text">Holistic Wellness</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MEMBERSHIP PLANS -->
+<section id="membership">
+  <div class="membership-header">
+    <div class="section-tag">Investment In You</div>
+    <h2 class="section-title">Choose Your<br><span>Elite Plan</span></h2>
+    <p class="section-sub" style="margin: 0 auto; text-align:center;">Flexible plans designed to match your ambition and schedule</p>
+  </div>
+  <div class="pricing-grid">
+    <div class="pricing-card reveal delay-1">
+      <div class="plan-name">Basic</div>
+      <div class="plan-tag">Essential Fitness</div>
+      <div class="plan-price">
+        <span class="plan-currency">₹</span>
+        <span class="plan-amount">999</span>
+        <span class="plan-period">/month</span>
+      </div>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li>Full Gym Access (6AM – 10PM)</li>
+        <li>Premium Locker Facility</li>
+        <li>Initial Fitness Assessment</li>
+        <li>Group Classes (2/week)</li>
+        <li>Hydration Station Access</li>
+      </ul>
+      <a href="#contact" class="plan-btn">Get Started <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+    <div class="pricing-card popular reveal delay-2">
+      <div class="popular-badge"><i class="fa-solid fa-star"></i> Most Popular</div>
+      <div class="plan-name">Premium</div>
+      <div class="plan-tag">Transform Faster</div>
+      <div class="plan-price">
+        <span class="plan-currency">₹</span>
+        <span class="plan-amount">1999</span>
+        <span class="plan-period">/month</span>
+      </div>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li>Personal Trainer (3 sessions/week)</li>
+        <li>Expert Diet Guidance</li>
+        <li>Premium Equipment Access</li>
+        <li>Unlimited Group Classes</li>
+        <li>Body Composition Analysis</li>
+        <li>Steam Room & Recovery Zone</li>
+      </ul>
+      <a href="#contact" class="plan-btn">Claim This Plan <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+    <div class="pricing-card reveal delay-3">
+      <div class="plan-name">Elite</div>
+      <div class="plan-tag">Peak Performance</div>
+      <div class="plan-price">
+        <span class="plan-currency">₹</span>
+        <span class="plan-amount">2999</span>
+        <span class="plan-period">/month</span>
+      </div>
+      <div class="plan-divider"></div>
+      <ul class="plan-features">
+        <li>One-on-One Expert Coaching</li>
+        <li>Custom Diet & Nutrition Plan</li>
+        <li>24/7 Priority Support</li>
+        <li>Premium Training Programs</li>
+        <li>Weekly Progress Reports</li>
+        <li>VIP Lounge Access</li>
+        <li>Guest Passes (2/month)</li>
+      </ul>
+      <a href="#contact" class="plan-btn">Go Elite <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </div>
+</section>
+
+<!-- TRAINERS -->
+<section id="trainers">
+  <div class="trainers-header">
+    <div class="section-tag">Elite Coaching Staff</div>
+    <h2 class="section-title">Meet Your<br><span>Champions</span></h2>
+  </div>
+  <div class="trainers-grid">
+    <div class="trainer-card reveal delay-1">
+      <div class="trainer-photo">
+        <img src="https://images.unsplash.com/photo-1567013127542-490d757e51fc?q=80&w=400&auto=format&fit=crop" alt="Arjun Mehta">
+        <div class="trainer-overlay">
+          <div class="trainer-socials">
+            <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="trainer-info">
+        <div class="trainer-name">Arjun Mehta</div>
+        <div class="trainer-role">Head Strength Coach</div>
+        <div class="trainer-certs">
+          <span class="cert-badge">CSCS</span>
+          <span class="cert-badge">NSCA</span>
+          <span class="cert-badge">CrossFit L2</span>
+        </div>
+        <div class="trainer-exp">Experience: <span>9 Years</span></div>
+      </div>
+    </div>
+    <div class="trainer-card reveal delay-2">
+      <div class="trainer-photo">
+        <img src="https://images.unsplash.com/photo-1544367567-0f2fcb009e0b?q=80&w=400&auto=format&fit=crop" alt="Priya Sharma">
+        <div class="trainer-overlay">
+          <div class="trainer-socials">
+            <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="trainer-info">
+        <div class="trainer-name">Priya Sharma</div>
+        <div class="trainer-role">Yoga & Wellness Expert</div>
+        <div class="trainer-certs">
+          <span class="cert-badge">RYT-500</span>
+          <span class="cert-badge">ACE CPT</span>
+          <span class="cert-badge">Nutrition</span>
+        </div>
+        <div class="trainer-exp">Experience: <span>7 Years</span></div>
+      </div>
+    </div>
+    <div class="trainer-card reveal delay-3">
+      <div class="trainer-photo">
+        <img src="https://images.unsplash.com/photo-1534438327276-14e5300c3a48?q=80&w=400&auto=format&fit=crop" alt="Vikram Reddy">
+        <div class="trainer-overlay">
+          <div class="trainer-socials">
+            <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="trainer-info">
+        <div class="trainer-name">Vikram Reddy</div>
+        <div class="trainer-role">HIIT & Performance</div>
+        <div class="trainer-certs">
+          <span class="cert-badge">ACSM</span>
+          <span class="cert-badge">TRX</span>
+          <span class="cert-badge">Sports Perf</span>
+        </div>
+        <div class="trainer-exp">Experience: <span>11 Years</span></div>
+      </div>
+    </div>
+    <div class="trainer-card reveal delay-4">
+      <div class="trainer-photo">
+        <img src="https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?q=80&w=400&auto=format&fit=crop" alt="Kavya Nair">
+        <div class="trainer-overlay">
+          <div class="trainer-socials">
+            <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+            <a href="#"><i class="fa-brands fa-instagram"></i></a>
+            <a href="#"><i class="fa-brands fa-youtube"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="trainer-info">
+        <div class="trainer-name">Kavya Nair</div>
+        <div class="trainer-role">Nutrition & Lifestyle</div>
+        <div class="trainer-certs">
+          <span class="cert-badge">RD</span>
+          <span class="cert-badge">CISSN</span>
+          <span class="cert-badge">FMS</span>
+        </div>
+        <div class="trainer-exp">Experience: <span>8 Years</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FACILITIES -->
+<section id="facilities">
+  <div class="facilities-header">
+    <div class="section-tag">World-Class Infrastructure</div>
+    <h2 class="section-title">Premium<br><span>Facilities</span></h2>
+  </div>
+  <div class="facilities-grid">
+    <div class="facility-card reveal delay-1">
+      <span class="facility-icon"><i class="fa-solid fa-person-running"></i></span>
+      <div class="facility-name">Cardio Zone</div>
+      <p class="facility-desc">State-of-the-art treadmills, ellipticals, rowers, and bikes with live performance tracking and entertainment systems.</p>
+      <span class="facility-tag"><i class="fa-solid fa-circle-chevron-right" style="font-size:0.75rem;margin-right:4px;"></i> 40+ Machines</span>
+    </div>
+    <div class="facility-card reveal delay-2">
+      <span class="facility-icon"><i class="fa-solid fa-dumbbell"></i></span>
+      <div class="facility-name">Strength Zone</div>
+      <p class="facility-desc">Olympic lifting platforms, free weights up to 120kg, cable systems, and resistance machines from premium brands.</p>
+      <span class="facility-tag"><i class="fa-solid fa-circle-chevron-right" style="font-size:0.75rem;margin-right:4px;"></i> Competition Grade</span>
+    </div>
+    <div class="facility-card reveal delay-3">
+      <span class="facility-icon"><i class="fa-solid fa-bolt-lightning"></i></span>
+      <div class="facility-name">Functional Training</div>
+      <p class="facility-desc">Turf area, battle ropes, sleds, plyometric boxes, monkey bars, and full mobility/movement zones.</p>
+      <span class="facility-tag"><i class="fa-solid fa-circle-chevron-right" style="font-size:0.75rem;margin-right:4px;"></i> 3000 Sq Ft</span>
+    </div>
+    <div class="facility-card reveal delay-1">
+      <span class="facility-icon"><i class="fa-solid fa-spa"></i></span>
+      <div class="facility-name">Yoga Studio</div>
+      <p class="facility-desc">Dedicated soundproofed studio with natural hardwood floors, meditation garden, and premium mats for all styles.</p>
+      <span class="facility-tag"><i class="fa-solid fa-circle-chevron-right" style="font-size:0.75rem;margin-right:4px;"></i> Peaceful Sanctuary</span>
+    </div>
+    <div class="facility-card reveal delay-2">
+      <span class="facility-icon"><i class="fa-solid fa-temperature-three-quarters"></i></span>
+      <div class="facility-name">Steam Room</div>
+      <p class="facility-desc">Luxury recovery steam room with eucalyptus aromatherapy, chromotherapy lighting, and post-workout cold plunge pool.</p>
+      <span class="facility-tag"><i class="fa-solid fa-circle-chevron-right" style="font-size:0.75rem;margin-right:4px;"></i> Full Recovery</span>
+    </div>
+    <div class="facility-card reveal delay-3">
+      <span class="facility-icon"><i class="fa-solid fa-utensils"></i></span>
+      <div class="facility-name">Nutrition Center</div>
+      <p class="facility-desc">In-house nutrition bar with freshly prepared shakes, meal-prep guidance, and certified dietitian consultations.</p>
+      <span class="facility-tag"><i class="fa-solid fa-circle-chevron-right" style="font-size:0.75rem;margin-right:4px;"></i> Fuel Optimally</span>
+    </div>
+  </div>
+</section>
+
+<!-- TRANSFORMATIONS -->
+<section id="transformations">
+  <div class="transformations-header">
+    <div class="section-tag">Real Results. Real People.</div>
+    <h2 class="section-title">Transformation<br><span>Gallery</span></h2>
+  </div>
+  <div class="masonry-grid">
+    <div class="masonry-item reveal delay-1">
+      <div class="masonry-photo">
+        <img src="https://images.unsplash.com/photo-1583454110551-21f2fa2afe61?q=80&w=500&auto=format&fit=crop" alt="Transformation Rahul K.">
+      </div>
+      <div class="before-after-badge">Before <i class="fa-solid fa-arrow-right" style="font-size:0.7rem;margin:0 2px;"></i> After</div>
+      <div class="masonry-overlay">
+        <div class="masonry-name">Rahul K.</div>
+        <div class="masonry-result">Lost 22kg in 4 months</div>
+      </div>
+    </div>
+    <div class="masonry-item reveal delay-2">
+      <div class="masonry-photo">
+        <img src="https://images.unsplash.com/photo-1502904581318-7e674001c383?q=80&w=500&auto=format&fit=crop" alt="Transformation Sneha P.">
+      </div>
+      <div class="before-after-badge">Before <i class="fa-solid fa-arrow-right" style="font-size:0.7rem;margin:0 2px;"></i> After</div>
+      <div class="masonry-overlay">
+        <div class="masonry-name">Sneha P.</div>
+        <div class="masonry-result">Built lean muscle in 3 months</div>
+      </div>
+    </div>
+    <div class="masonry-item reveal delay-3">
+      <div class="masonry-photo">
+        <img src="https://images.unsplash.com/photo-1526506118085-60ce8714f8c5?q=80&w=500&auto=format&fit=crop" alt="Transformation Karthik R.">
+      </div>
+      <div class="before-after-badge">Before <i class="fa-solid fa-arrow-right" style="font-size:0.7rem;margin:0 2px;"></i> After</div>
+      <div class="masonry-overlay">
+        <div class="masonry-name">Karthik R.</div>
+        <div class="masonry-result">Transformed posture & strength</div>
+      </div>
+    </div>
+    <div class="masonry-item reveal delay-4">
+      <div class="masonry-photo">
+        <img src="https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?q=80&w=500&auto=format&fit=crop" alt="Transformation Anita S.">
+      </div>
+      <div class="before-after-badge">Before <i class="fa-solid fa-arrow-right" style="font-size:0.7rem;margin:0 2px;"></i> After</div>
+      <div class="masonry-overlay">
+        <div class="masonry-name">Anita S.</div>
+        <div class="masonry-result">Marathon-ready in 6 months</div>
+      </div>
+    </div>
+    <div class="masonry-item reveal delay-1">
+      <div class="masonry-photo">
+        <img src="https://images.unsplash.com/photo-1581009146145-b5ef050c2e1e?q=80&w=500&auto=format&fit=crop" alt="Transformation Dev M.">
+      </div>
+      <div class="before-after-badge">Before <i class="fa-solid fa-arrow-right" style="font-size:0.7rem;margin:0 2px;"></i> After</div>
+      <div class="masonry-overlay">
+        <div class="masonry-name">Dev M.</div>
+        <div class="masonry-result">15kg muscle gain in 5 months</div>
+      </div>
+    </div>
+    <div class="masonry-item reveal delay-2">
+      <div class="masonry-photo">
+        <img src="https://images.unsplash.com/photo-1518310383802-640c2de311b2?q=80&w=500&auto=format&fit=crop" alt="Transformation Meera T.">
+      </div>
+      <div class="before-after-badge">Before <i class="fa-solid fa-arrow-right" style="font-size:0.7rem;margin:0 2px;"></i> After</div>
+      <div class="masonry-overlay">
+        <div class="masonry-name">Meera T.</div>
+        <div class="masonry-result">Complete body recomposition</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section id="testimonials">
+  <div class="testimonials-header">
+    <div class="section-tag">Member Stories</div>
+    <h2 class="section-title">What Our<br><span>Champions Say</span></h2>
+  </div>
+  <div class="testimonials-slider">
+    <div class="testimonials-track" id="testimonialTrack">
+      <div class="testimonial-card">
+        <div class="testimonial-quote"><i class="fa-solid fa-quote-right"></i></div>
+        <div class="testimonial-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+        <p class="testimonial-text">FITMAX ELITE completely changed my relationship with fitness. In 5 months, I lost 18kg and gained the confidence I never thought possible. The trainers here are world-class, and the facilities are truly premium.</p>
+        <div class="testimonial-client">
+          <div class="client-avatar"><img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=150&auto=format&fit=crop" alt="Sanjay Verma"></div>
+          <div>
+            <div class="client-name">Sanjay Verma</div>
+            <div class="client-info">Lost 18kg · 5 Months</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-quote"><i class="fa-solid fa-quote-right"></i></div>
+        <div class="testimonial-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+        <p class="testimonial-text">I've been to gyms across Mumbai and Delhi, but nothing comes close to FITMAX ELITE. The personal training programs are incredibly customized, and my strength has doubled in 6 months. Worth every rupee.</p>
+        <div class="testimonial-client">
+          <div class="client-avatar"><img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=150&auto=format&fit=crop" alt="Pritha Menon"></div>
+          <div>
+            <div class="client-name">Pritha Menon</div>
+            <div class="client-info">Elite Member · 8 Months</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-quote"><i class="fa-solid fa-quote-right"></i></div>
+        <div class="testimonial-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+        <p class="testimonial-text">The nutrition guidance alone was worth the Elite membership. Combined with the coaching, I went from struggling to run 2km to completing a half marathon. The results were beyond anything I imagined.</p>
+        <div class="testimonial-client">
+          <div class="client-avatar"><img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=150&auto=format&fit=crop" alt="Rohan Pillai"></div>
+          <div>
+            <div class="client-name">Rohan Pillai</div>
+            <div class="client-info">Half Marathon Ready · 6 Months</div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="testimonial-quote"><i class="fa-solid fa-quote-right"></i></div>
+        <div class="testimonial-stars"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></div>
+        <p class="testimonial-text">As a busy entrepreneur, I needed something efficient. The Elite plan gave me a dedicated coach, custom programming, and results I could see weekly. My productivity at work has also improved enormously.</p>
+        <div class="testimonial-client">
+          <div class="client-avatar"><img src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=150&auto=format&fit=crop" alt="Aditya Kapoor"></div>
+          <div>
+            <div class="client-name">Aditya Kapoor</div>
+            <div class="client-info">Premium Member · 4 Months</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="slider-controls">
+    <button class="slider-btn" onclick="moveSlider(-1)"><i class="fa-solid fa-chevron-left"></i></button>
+    <div class="slider-dots" id="sliderDots">
+      <div class="dot active"></div>
+      <div class="dot"></div>
+    </div>
+    <button class="slider-btn" onclick="moveSlider(1)"><i class="fa-solid fa-chevron-right"></i></button>
+  </div>
+</section>
+
+<!-- SCHEDULE -->
+<section id="schedule">
+  <div class="schedule-header">
+    <div class="section-tag">Weekly Timetable</div>
+    <h2 class="section-title">Class<br><span>Schedule</span></h2>
+  </div>
+  <div class="schedule-table-wrap reveal">
+    <table class="schedule-table">
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Monday</th>
+          <th>Tuesday</th>
+          <th>Wednesday</th>
+          <th>Thursday</th>
+          <th>Friday</th>
+          <th>Saturday</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>6:00 AM</td>
+          <td><span class="class-badge badge-yoga">Yoga</span></td>
+          <td><span class="class-badge badge-cardio">Cardio</span></td>
+          <td><span class="class-badge badge-yoga">Yoga</span></td>
+          <td><span class="class-badge badge-cardio">Cardio</span></td>
+          <td><span class="class-badge badge-yoga">Yoga</span></td>
+          <td><span class="class-badge badge-hiit">HIIT</span></td>
+        </tr>
+        <tr>
+          <td>8:00 AM</td>
+          <td><span class="class-badge badge-hiit">HIIT</span></td>
+          <td><span class="class-badge badge-strength">Strength</span></td>
+          <td><span class="class-badge badge-hiit">HIIT</span></td>
+          <td><span class="class-badge badge-yoga">Yoga</span></td>
+          <td><span class="class-badge badge-strength">Strength</span></td>
+          <td><span class="class-badge badge-zumba">Zumba</span></td>
+        </tr>
+        <tr>
+          <td>10:00 AM</td>
+          <td><span class="class-badge badge-zumba">Zumba</span></td>
+          <td><span class="class-badge badge-yoga">Yoga</span></td>
+          <td><span class="class-badge badge-cardio">Cardio</span></td>
+          <td><span class="class-badge badge-hiit">HIIT</span></td>
+          <td><span class="class-badge badge-zumba">Zumba</span></td>
+          <td><span class="class-badge badge-strength">Strength</span></td>
+        </tr>
+        <tr>
+          <td>5:00 PM</td>
+          <td><span class="class-badge badge-strength">Strength</span></td>
+          <td><span class="class-badge badge-hiit">HIIT</span></td>
+          <td><span class="class-badge badge-strength">Strength</span></td>
+          <td><span class="class-badge badge-zumba">Zumba</span></td>
+          <td><span class="class-badge badge-cardio">Cardio</span></td>
+          <td><span class="class-badge badge-yoga">Yoga</span></td>
+        </tr>
+        <tr>
+          <td>7:00 PM</td>
+          <td><span class="class-badge badge-cardio">Cardio</span></td>
+          <td><span class="class-badge badge-zumba">Zumba</span></td>
+          <td><span class="class-badge badge-yoga">Yoga</span></td>
+          <td><span class="class-badge badge-strength">Strength</span></td>
+          <td><span class="class-badge badge-hiit">HIIT</span></td>
+          <td><span class="class-badge badge-cardio">Cardio</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- LEAD GEN / CONTACT -->
+<section id="contact">
+  <div class="contact-inner">
+    <div class="contact-content reveal-left">
+      <div class="section-tag">Limited Spots Available</div>
+      <h2 class="section-title">Claim Your<br><span>Free Trial</span></h2>
+      <p class="section-sub">Experience the FITMAX ELITE difference firsthand. Book your complimentary session and let our coaches show you exactly how we'll transform your body.</p>
+      <div class="contact-perks">
+        <div class="perk-item">
+          <div class="perk-icon"><i class="fa-solid fa-bullseye"></i></div>
+          <div>
+            <div class="perk-title">Free Fitness Assessment</div>
+            <div class="perk-desc">Comprehensive body composition and movement analysis</div>
+          </div>
+        </div>
+        <div class="perk-item">
+          <div class="perk-icon"><i class="fa-solid fa-dumbbell"></i></div>
+          <div>
+            <div class="perk-title">One Free Training Session</div>
+            <div class="perk-desc">Train with our elite coaches, zero commitment</div>
+          </div>
+        </div>
+        <div class="perk-item">
+          <div class="perk-icon"><i class="fa-solid fa-apple-whole"></i></div>
+          <div>
+            <div class="perk-title">Custom Diet Roadmap</div>
+            <div class="perk-desc">Personalized nutrition plan consultation, absolutely free</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="contact-form reveal-right">
+      <h3 style="font-family:'Bebas Neue',sans-serif;font-size:1.8rem;letter-spacing:3px;margin-bottom:0.25rem;">Start Today</h3>
+      <p style="font-size:0.8rem;color:var(--light);letter-spacing:1px;margin-bottom:2rem;">Fill below — we'll call within 2 hours</p>
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-input" placeholder="Your Name">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input type="tel" class="form-input" placeholder="+91 XXXXX XXXXX">
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email Address</label>
+        <input type="email" class="form-input" placeholder="you@email.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Primary Fitness Goal</label>
+        <select class="form-select form-input">
+          <option value="" disabled selected>Select Your Goal</option>
+          <option>Weight Loss</option>
+          <option>Muscle Building</option>
+          <option>Strength & Performance</option>
+          <option>Marathon / Endurance</option>
+          <option>Holistic Wellness</option>
+          <option>Post-Injury Rehabilitation</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Preferred Plan</label>
+        <select class="form-select form-input">
+          <option value="" disabled selected>Select Membership</option>
+          <option>Basic — ₹999/month</option>
+          <option>Premium — ₹1999/month</option>
+          <option>Elite — ₹2999/month</option>
+        </select>
+      </div>
+      <button class="btn-primary" style="width:100%;justify-content:center;margin-top:0.5rem;" onclick="handleSubmit(this)"><i class="fa-solid fa-bolt"></i> Claim Your Free Trial</button>
+      <p style="font-size:0.7rem;color:var(--mid);text-align:center;margin-top:1rem;letter-spacing:1px;"><i class="fa-solid fa-lock" style="font-size:0.75rem;margin-right:4px;"></i> Your data is safe. No spam. We'll only call once.</p>
+    </div>
+  </div>
+</section>
+
+<!-- MAP -->
+<section id="location">
+  <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d62614.85890756494!2d77.29543329999998!3d11.110363500000003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ba907f8cca4c1c1%3A0x5cdc95f0f1a2a72!2sTiruppur%2C%20Tamil%20Nadu!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin" allowfullscreen loading="lazy"></iframe>
+  <div class="map-overlay">
+    <h3>Find Us</h3>
+    <div class="map-address">
+      <i class="fa-solid fa-location-dot" style="color:var(--neon);margin-right:6px;"></i> <span>FITMAX ELITE</span><br>
+      123, Elite Fitness Tower, Avinashi Road<br>
+      Tiruppur, Tamil Nadu — 641604<br><br>
+      <i class="fa-solid fa-phone" style="color:var(--neon);margin-right:6px;"></i> <span>+91 98765 43210</span><br>
+      <i class="fa-solid fa-clock" style="color:var(--neon);margin-right:6px;"></i> <span>Mon–Sat:</span> 5:30AM – 10:30PM<br>
+      <i class="fa-solid fa-clock" style="color:var(--neon);margin-right:6px;"></i> <span>Sunday:</span> 6:00AM – 8:00PM
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="nav-logo">FIT<span>MAX</span> ELITE</a>
+      <p class="footer-tagline">India's most premium fitness experience. Where champions are forged and legends are made. Transform your body, transform your life.</p>
+      <div class="footer-socials">
+        <a href="#" class="social-btn"><i class="fa-brands fa-linkedin-in"></i></a>
+        <a href="#" class="social-btn"><i class="fa-brands fa-instagram"></i></a>
+        <a href="#" class="social-btn"><i class="fa-brands fa-facebook-f"></i></a>
+        <a href="#" class="social-btn"><i class="fa-brands fa-youtube"></i></a>
+      </div>
+    </div>
+    <div class="footer-col">
+      <h4>Quick Links</h4>
+      <ul class="footer-links">
+        <li><a href="#about">About Us</a></li>
+        <li><a href="#membership">Membership</a></li>
+        <li><a href="#trainers">Our Trainers</a></li>
+        <li><a href="#facilities">Facilities</a></li>
+        <li><a href="#schedule">Schedule</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Programs</h4>
+      <ul class="footer-links">
+        <li><a href="#">Weight Loss</a></li>
+        <li><a href="#">Muscle Building</a></li>
+        <li><a href="#">HIIT Training</a></li>
+        <li><a href="#">Yoga & Mindfulness</a></li>
+        <li><a href="#">Sports Performance</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <div class="footer-contact-item">
+        <span class="footer-contact-icon"><i class="fa-solid fa-location-dot"></i></span>
+        <span>123 Elite Fitness Tower, Avinashi Road, Tiruppur — 641604</span>
+      </div>
+      <div class="footer-contact-item">
+        <span class="footer-contact-icon"><i class="fa-solid fa-phone"></i></span>
+        <span>+91 98765 43210</span>
+      </div>
+      <div class="footer-contact-item">
+        <span class="footer-contact-icon"><i class="fa-solid fa-envelope"></i></span>
+        <span>hello@fitmaxelite.in</span>
+      </div>
+      <div class="footer-contact-item">
+        <span class="footer-contact-icon"><i class="fa-solid fa-clock"></i></span>
+        <span>Mon–Sat: 5:30AM – 10:30PM</span>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2025 <span>FITMAX ELITE</span>. All Rights Reserved. Made with <i class="fa-solid fa-bolt" style="color:var(--neon)"></i> for Champions.</p>
+    <div class="footer-cta-mini">
+      <a href="#contact" class="btn-primary" style="font-size:0.8rem;padding:10px 22px;">Book Free Trial <i class="fa-solid fa-arrow-right"></i></a>
+    </div>
+  </div>
+</footer>
+
+<script>
+// =====================
+// CUSTOM CURSOR
+// =====================
+const cursor = document.getElementById('cursor');
+const follower = document.getElementById('cursorFollower');
+let mouseX = 0, mouseY = 0;
+let followerX = 0, followerY = 0;
+
+document.addEventListener('mousemove', e => {
+  mouseX = e.clientX; mouseY = e.clientY;
+  cursor.style.left = mouseX + 'px';
+  cursor.style.top = mouseY + 'px';
+});
+
+function animateFollower() {
+  followerX += (mouseX - followerX) * 0.12;
+  followerY += (mouseY - followerY) * 0.12;
+  follower.style.left = followerX + 'px';
+  follower.style.top = followerY + 'px';
+  requestAnimationFrame(animateFollower);
+}
+animateFollower();
+
+document.querySelectorAll('a, button, .pricing-card, .trainer-card, .facility-card').forEach(el => {
+  el.addEventListener('mouseenter', () => {
+    follower.style.width = '60px';
+    follower.style.height = '60px';
+    follower.style.borderColor = 'rgba(184,255,46,0.8)';
+  });
+  el.addEventListener('mouseleave', () => {
+    follower.style.width = '40px';
+    follower.style.height = '40px';
+    follower.style.borderColor = 'rgba(184,255,46,0.4)';
+  });
+});
+
+// =====================
+// NAVBAR SCROLL
+// =====================
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 60);
+});
+
+// =====================
+// MOBILE MENU
+// =====================
+function toggleMenu() {
+  document.getElementById('mobileMenu').classList.toggle('open');
+}
+
+// =====================
+// 3D CARD TILT & GLARE EFFECT
+// =====================
+(function initCardTilt() {
+  const cards = document.querySelectorAll('.pricing-card, .trainer-card, .facility-card');
+  cards.forEach(card => {
+    const glare = document.createElement('div');
+    glare.className = 'card-glare';
+    card.appendChild(glare);
+
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      const w = rect.width;
+      const h = rect.height;
+
+      const rotateX = ((y / h) - 0.5) * -12; // tilt degrees
+      const rotateY = ((x / w) - 0.5) * 12;
+
+      card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.03, 1.03, 1.03)`;
+
+      const pctX = (x / w) * 100;
+      const pctY = (y / h) * 100;
+      glare.style.background = `radial-gradient(circle at ${pctX}% ${pctY}%, rgba(255, 255, 255, 0.12) 0%, transparent 65%)`;
+    });
+
+    card.addEventListener('mouseenter', () => {
+      card.style.transition = 'transform 0.1s ease-out';
+    });
+
+    card.addEventListener('mouseleave', () => {
+      card.style.transition = 'transform 0.5s ease';
+      card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)';
+    });
+  });
+})();
+
+// =====================
+// HERO BADGES 3D PARALLAX
+// =====================
+document.addEventListener('mousemove', e => {
+  const x = (e.clientX - window.innerWidth / 2) * 0.02;
+  const y = (e.clientY - window.innerHeight / 2) * 0.02;
+
+  gsap.to('.badge-left', { x: x * 1.5, y: y * 1.5, duration: 0.8, ease: 'power2.out' });
+  gsap.to('.badge-right', { x: -x * 1.2, y: -y * 1.2, duration: 0.8, ease: 'power2.out' });
+});
+
+// =====================
+// THREE.JS INTERACTIVE 3D HERO
+// =====================
+(function initHeroCanvas() {
+  const canvas = document.getElementById('hero-canvas');
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.setClearColor(0x000000, 0);
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(65, canvas.clientWidth / canvas.clientHeight, 0.1, 1000);
+  camera.position.z = 28;
+
+  // Resize
+  function resize() {
+    const w = canvas.clientWidth, h = canvas.clientHeight;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+  resize();
+  window.addEventListener('resize', resize);
+
+  // Dynamic knurling bump texture generator
+  function getKnurlingTexture() {
+    const c = document.createElement('canvas');
+    c.width = 64;
+    c.height = 64;
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = '#808080';
+    ctx.fillRect(0, 0, 64, 64);
+    ctx.strokeStyle = '#ffffff';
+    ctx.lineWidth = 1;
+    for (let i = -64; i < 64; i += 6) {
+      ctx.beginPath(); ctx.moveTo(i, 0); ctx.lineTo(i + 64, 64); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(i + 64, 0); ctx.lineTo(i, 64); ctx.stroke();
+    }
+    const tex = new THREE.CanvasTexture(c);
+    tex.wrapS = THREE.RepeatWrapping;
+    tex.wrapT = THREE.RepeatWrapping;
+    tex.repeat.set(2, 24);
+    return tex;
+  }
+
+  // Particle system
+  const count = 1800;
+  const geo = new THREE.BufferGeometry();
+  const pos = new Float32Array(count * 3);
+  const col = new Float32Array(count * 3);
+
+  for (let i = 0; i < count; i++) {
+    pos[i * 3] = (Math.random() - 0.5) * 130;
+    pos[i * 3 + 1] = (Math.random() - 0.5) * 90;
+    pos[i * 3 + 2] = (Math.random() - 0.5) * 60;
+    const t = Math.random();
+    col[i * 3] = t > 0.75 ? 0.72 : 0.05;
+    col[i * 3 + 1] = t > 0.75 ? 1.0 : 0.05;
+    col[i * 3 + 2] = t > 0.75 ? 0.18 : 0.05;
+  }
+  geo.setAttribute('position', new THREE.BufferAttribute(pos, 3));
+  geo.setAttribute('color', new THREE.BufferAttribute(col, 3));
+
+  const mat = new THREE.PointsMaterial({
+    size: 0.28,
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.8,
+    sizeAttenuation: true
+  });
+  const particles = new THREE.Points(geo, mat);
+  scene.add(particles);
+
+  // Group for the main 3D dumbbell
+  const dumbbell = new THREE.Group();
+
+  // Upgraded barbell shaft with knurling and high reflectivity
+  const bumpTex = getKnurlingTexture();
+  const barGeo = new THREE.CylinderGeometry(0.28, 0.28, 10, 32);
+  const barMat = new THREE.MeshStandardMaterial({
+    color: 0xdcdcdc,
+    metalness: 1.0,
+    roughness: 0.12,
+    bumpMap: bumpTex,
+    bumpScale: 0.02
+  });
+  const shaft = new THREE.Mesh(barGeo, barMat);
+  dumbbell.add(shaft);
+
+  // Elite competition rubberized weight plates
+  const plateBigGeo = new THREE.CylinderGeometry(2.4, 2.4, 0.7, 48);
+  const plateMedGeo = new THREE.CylinderGeometry(2.0, 2.0, 0.5, 48);
+  
+  // Custom carbon/rubber material for plates
+  const plateMat = new THREE.MeshStandardMaterial({
+    color: 0x161616,
+    metalness: 0.5,
+    roughness: 0.6
+  });
+  
+  // Steel cores for plates
+  const coreMat = new THREE.MeshStandardMaterial({
+    color: 0x333333,
+    metalness: 0.9,
+    roughness: 0.15
+  });
+
+  // Collars (bolts that lock weight plates)
+  const collarGeo = new THREE.CylinderGeometry(0.5, 0.5, 0.35, 24);
+  const collarMat = new THREE.MeshStandardMaterial({
+    color: 0xcccccc,
+    metalness: 0.95,
+    roughness: 0.1
+  });
+
+  // Left Plates assembly
+  const pl1 = new THREE.Mesh(plateBigGeo, plateMat); pl1.position.y = -3.0;
+  const pl2 = new THREE.Mesh(plateBigGeo, plateMat); pl2.position.y = -3.8;
+  const pl3 = new THREE.Mesh(plateMedGeo, coreMat); pl3.position.y = -4.4;
+  const colL = new THREE.Mesh(collarGeo, collarMat); colL.position.y = -2.5;
+  dumbbell.add(pl1, pl2, pl3, colL);
+
+  // Right Plates assembly
+  const pr1 = new THREE.Mesh(plateBigGeo, plateMat); pr1.position.y = 3.0;
+  const pr2 = new THREE.Mesh(plateBigGeo, plateMat); pr2.position.y = 3.8;
+  const pr3 = new THREE.Mesh(plateMedGeo, coreMat); pr3.position.y = 4.4;
+  const colR = new THREE.Mesh(collarGeo, collarMat); colR.position.y = 2.5;
+  dumbbell.add(pr1, pr2, pr3, colR);
+
+  // Primary neon orbit ring
+  const ringGeo = new THREE.TorusGeometry(3.6, 0.08, 16, 100);
+  const ringMat = new THREE.MeshStandardMaterial({
+    color: 0xb8ff2e,
+    emissive: 0xb8ff2e,
+    emissiveIntensity: 1.8,
+    metalness: 0.5,
+    roughness: 0.1
+  });
+  const ring = new THREE.Mesh(ringGeo, ringMat);
+  ring.rotation.x = Math.PI / 2;
+  dumbbell.add(ring);
+
+  // Secondary cyan orbit ring for premium depth
+  const ringGeo2 = new THREE.TorusGeometry(4.2, 0.04, 16, 100);
+  const ringMat2 = new THREE.MeshStandardMaterial({
+    color: 0x00f3ff,
+    emissive: 0x00f3ff,
+    emissiveIntensity: 1.2,
+    metalness: 0.5,
+    roughness: 0.1
+  });
+  const ring2 = new THREE.Mesh(ringGeo2, ringMat2);
+  ring2.rotation.x = Math.PI / 2 + 0.3;
+  ring2.rotation.y = 0.3;
+  dumbbell.add(ring2);
+
+  dumbbell.rotation.z = Math.PI / 2;
+  dumbbell.position.set(12, 0, -4);
+  dumbbell.scale.setScalar(1.2);
+  scene.add(dumbbell);
+
+  // Add floating abstract metallic nodes in background
+  const floatGroup = new THREE.Group();
+  const floatGeo = new THREE.TorusKnotGeometry(1.2, 0.3, 100, 16);
+  const floatMat = new THREE.MeshStandardMaterial({
+    color: 0x222222,
+    metalness: 0.95,
+    roughness: 0.15,
+    flatShading: true
+  });
+  const knot = new THREE.Mesh(floatGeo, floatMat);
+  knot.position.set(16, 6, -15);
+  floatGroup.add(knot);
+
+  const floatGeo2 = new THREE.IcosahedronGeometry(1.5, 0);
+  const octa = new THREE.Mesh(floatGeo2, floatMat);
+  octa.position.set(-18, -8, -12);
+  floatGroup.add(octa);
+
+  scene.add(floatGroup);
+
+  // Lights setup
+  scene.add(new THREE.AmbientLight(0xffffff, 0.35));
+  
+  const neonLight = new THREE.PointLight(0xb8ff2e, 3, 60);
+  neonLight.position.set(12, 4, 6);
+  scene.add(neonLight);
+
+  const cyanLight = new THREE.PointLight(0x00f3ff, 2.5, 60);
+  cyanLight.position.set(12, -6, 2);
+  scene.add(cyanLight);
+
+  const keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
+  keyLight.position.set(-15, 15, 10);
+  scene.add(keyLight);
+
+  // Mouse responsiveness
+  let mouseX = 0, mouseY = 0;
+  let targetX = 0, targetY = 0;
+
+  document.addEventListener('mousemove', e => {
+    mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
+    mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
+  });
+
+  let t = 0;
+  function animate() {
+    requestAnimationFrame(animate);
+    t += 0.008;
+
+    // Smooth interpolation for mouse drift
+    targetX += (mouseX - targetX) * 0.06;
+    targetY += (mouseY - targetY) * 0.06;
+
+    // Rotate barbell
+    dumbbell.rotation.y += 0.005;
+    dumbbell.rotation.z = Math.PI / 2 + Math.sin(t * 0.4) * 0.12;
+    dumbbell.position.y = Math.sin(t * 0.6) * 0.7;
+
+    // Interactive camera rotation parallax
+    camera.position.x = targetX * 4;
+    camera.position.y = -targetY * 4;
+    camera.lookAt(0, 0, -4);
+
+    // Orbit rings counter-rotate
+    ring.rotation.y += 0.015;
+    ring2.rotation.y -= 0.008;
+
+    // Wobble background floating meshes
+    knot.rotation.x += 0.005;
+    knot.rotation.y += 0.003;
+    octa.rotation.x -= 0.002;
+    octa.rotation.z += 0.004;
+    floatGroup.position.y = Math.sin(t * 0.3) * 0.4;
+
+    // Particles attract slightly to mouse and wave
+    particles.rotation.y += 0.0006 + targetX * 0.001;
+    particles.rotation.x += 0.0002;
+
+    const positions = particles.geometry.attributes.position.array;
+    for (let i = 0; i < count; i++) {
+      positions[i * 3 + 1] += Math.sin(t + positions[i * 3]) * 0.012;
+    }
+    particles.geometry.attributes.position.needsUpdate = true;
+
+    // Pulse neon intensity
+    neonLight.intensity = 2.8 + Math.sin(t * 2.5) * 0.6;
+    cyanLight.intensity = 2.2 + Math.cos(t * 2.0) * 0.4;
+
+    renderer.render(scene, camera);
+  }
+  animate();
+})();
+
+// =====================
+// GSAP SCROLL ANIMATIONS
+// =====================
+gsap.registerPlugin(ScrollTrigger);
+
+// Hero animations
+gsap.fromTo('.hero-badge', { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.8, delay: 0.3 });
+gsap.fromTo('.hero-headline .line1', { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.9, delay: 0.5 });
+gsap.fromTo('.hero-headline .line2', { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.9, delay: 0.7 });
+gsap.fromTo('.hero-headline .line3', { opacity: 0, x: -60 }, { opacity: 1, x: 0, duration: 0.9, delay: 0.9 });
+gsap.fromTo('.hero-sub', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.8, delay: 1.1 });
+gsap.fromTo('.hero-ctas', { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.8, delay: 1.3 });
+
+// Parallax hero background
+gsap.to('.hero-bg-overlay', {
+  scrollTrigger: { trigger: '#hero', start: 'top top', end: 'bottom top', scrub: true },
+  y: 100, opacity: 0.5
+});
+
+// Pricing cards
+gsap.fromTo('.pricing-card', {
+  opacity: 0, y: 60, scale: 0.95
+}, {
+  opacity: 1, y: 0, scale: 1,
+  duration: 0.7,
+  stagger: 0.15,
+  scrollTrigger: { trigger: '.pricing-grid', start: 'top 80%' }
+});
+
+// Facilities
+gsap.fromTo('.facility-card', {
+  opacity: 0, y: 40
+}, {
+  opacity: 1, y: 0,
+  duration: 0.6,
+  stagger: 0.1,
+  scrollTrigger: { trigger: '.facilities-grid', start: 'top 80%' }
+});
+
+// Trainers
+gsap.fromTo('.trainer-card', {
+  opacity: 0, scale: 0.9
+}, {
+  opacity: 1, scale: 1,
+  duration: 0.6,
+  stagger: 0.12,
+  scrollTrigger: { trigger: '.trainers-grid', start: 'top 80%' }
+});
+
+// Masonry
+gsap.fromTo('.masonry-item', {
+  opacity: 0, y: 30
+}, {
+  opacity: 1, y: 0,
+  duration: 0.6,
+  stagger: 0.1,
+  scrollTrigger: { trigger: '.masonry-grid', start: 'top 80%' }
+});
+
+// =====================
+// INTERSECTION OBSERVER FOR REVEALS
+// =====================
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('visible');
+    }
+  });
+}, { threshold: 0.1, rootMargin: '0px 0px -60px 0px' });
+
+document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale').forEach(el => revealObserver.observe(el));
+
+// =====================
+// ANIMATED COUNTERS
+// =====================
+function animateCounter(el, target, suffix = '') {
+  let start = 0;
+  const duration = 2000;
+  const startTime = performance.now();
+  
+  function update(currentTime) {
+    const elapsed = currentTime - startTime;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const value = Math.floor(eased * target);
+    el.textContent = value.toLocaleString() + suffix;
+    if (progress < 1) requestAnimationFrame(update);
+    else el.textContent = target.toLocaleString() + suffix;
+  }
+  requestAnimationFrame(update);
+}
+
+const counterObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const el = entry.target;
+      const target = parseInt(el.dataset.target);
+      const suffix = el.dataset.target === '98' ? '%' : el.dataset.target === '50' ? '+' : '+';
+      animateCounter(el, target, suffix);
+      counterObserver.unobserve(el);
+    }
+  });
+}, { threshold: 0.5 });
+
+document.querySelectorAll('.stat-number').forEach(el => counterObserver.observe(el));
+
+// =====================
+// TESTIMONIALS SLIDER
+// =====================
+let currentSlide = 0;
+const totalSlides = 2; // 4 cards / ~2 views on desktop
+
+function moveSlider(dir) {
+  currentSlide = Math.max(0, Math.min(totalSlides - 1, currentSlide + dir));
+  const track = document.getElementById('testimonialTrack');
+  const cardWidth = track.children[0].offsetWidth + 24;
+  track.style.transform = `translateX(-${currentSlide * cardWidth * (window.innerWidth > 768 ? 1 : 1)}px)`;
+  document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
+}
+
+// =====================
+// FORM SUBMIT
+// =====================
+function handleSubmit(btn) {
+  btn.innerHTML = '<i class="fa-solid fa-circle-check"></i> Thank You! We\'ll Call Within 2 Hours';
+  btn.style.background = 'linear-gradient(90deg, #7dff00, #b8ff2e)';
+  btn.disabled = true;
+}
+
+// =====================
+// SCROLL PROGRESS BAR
+// =====================
+const progressBar = document.createElement('div');
+progressBar.style.cssText = 'position:fixed;top:0;left:0;height:2px;background:var(--neon);z-index:9999;width:0%;transition:width 0.1s;box-shadow:0 0 10px var(--neon);';
+document.body.appendChild(progressBar);
+
+window.addEventListener('scroll', () => {
+  const scrollPct = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+  progressBar.style.width = scrollPct + '%';
+});
+</script>
+</body>
+</html>
